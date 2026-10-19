@@ -2,6 +2,6 @@
 #include "bitfield.h"
 
 int main() {
-    std::cout << "Hello world";
+    std::cout << "Start project";
     return 0;
 }
