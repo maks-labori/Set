@@ -2,16 +2,15 @@
 
 void swap(Bitfield& this_field, Bitfield& other) {
     using std::swap;
-    swap(this_field.size, other.size);
     swap(this_field.data_, other.data_);
     swap(this_field.max_power, other.max_power);
 }
 
-Bitfield::Bitfield():max_power(0),size(0),data_(nullptr) {}
+Bitfield::Bitfield():max_power(0),data_(nullptr) {}
 
 Bitfield::Bitfield(size_t max_power) {
-    size = max_power / 32 + static_cast<size_t>(max_power % 32 != 0);
-    (*this).max_power = size * 32;
+    (*this).max_power = ((max_power + 31) / 32) * 32;
+    size_t size = get_size();
     data_ = new unsigned int[size];
     for (size_t i = 0;i < size;++i) {
         data_[i] = 0;
@@ -19,8 +18,8 @@ Bitfield::Bitfield(size_t max_power) {
 }
 
 Bitfield::Bitfield(const Bitfield& other) {
-    size = other.size;
     max_power = other.max_power;
+    size_t size = get_size();
     data_ = new unsigned int[size];
     for (size_t i = 0;i < size;++i) {
         data_[i] = other.data_[i];
@@ -28,7 +27,8 @@ Bitfield::Bitfield(const Bitfield& other) {
 }
 
 Bitfield::Bitfield(std::initializer_list<unsigned int> list) {
-    size = list.size();
+    (*this).max_power = list.size()*32;
+    size_t size = get_size();
     data_ = new unsigned int[size];
     int i = 0;
     for (auto elem : list) {
@@ -39,7 +39,7 @@ Bitfield::Bitfield(std::initializer_list<unsigned int> list) {
 }
 
 Bitfield::~Bitfield() {
-    size = 0;max_power = 0;
+    max_power = 0;
     if (data_) {
         delete[] data_;
     }
@@ -77,7 +77,8 @@ bool Bitfield::get_bit(size_t pos) {
 }
 
 bool Bitfield::operator==(const Bitfield& other)const noexcept {
-    if ((*this).size != other.size || (*this).max_power != other.max_power) { return false; }
+    if ((*this).max_power != other.max_power) { return false; }
+    size_t size = (*this).get_size();
     for (size_t i = 0;i < size;++i) {
         if ((*this).data_[i] != other.data_[i]) { return false; }
     }
@@ -90,7 +91,8 @@ bool Bitfield::operator!=(const Bitfield& other)const noexcept {
 
 Bitfield Bitfield::operator~()const {
     Bitfield res((*this));
-    for (size_t i = 0;i < res.size;++i) {
+    size_t size = res.get_size();
+    for (size_t i = 0;i < size;++i) {
         res.data_[i] = ~res.data_[i];
     }
     return res;
@@ -108,8 +110,9 @@ Bitfield& Bitfield::operator=(Bitfield&& other)noexcept {
 }
 
 Bitfield Bitfield::operator|(const Bitfield& other)const {
-    if ((*this).size != other.size) { throw std::logic_error("diferent dimension"); }
+    if ((*this).get_power() != other.get_power()) { throw std::logic_error("diferent dimension"); }
     Bitfield res(other.max_power);
+    size_t size = res.get_size();
     for (size_t i = 0;i < size;++i) {
         res.data_[i] = (*this).data_[i] | other.data_[i];
     }
@@ -117,8 +120,9 @@ Bitfield Bitfield::operator|(const Bitfield& other)const {
 }
 
 Bitfield Bitfield::operator&(const Bitfield& other)const {
-    if ((*this).size != other.size) { throw std::logic_error("diferent dimension"); }
+    if ((*this).get_power() != other.get_power()) { throw std::logic_error("diferent dimension"); }
     Bitfield res(other.max_power);
+    size_t size = res.get_size();
     for (size_t i = 0;i < size;++i) {
         res.data_[i] = (*this).data_[i] & other.data_[i];
     }

@@ -4,8 +4,7 @@
 class Bitfield {
 private:
     unsigned int* data_;
-    size_t max_power; //количество битов
-    size_t size; // количество блоков
+    size_t max_power;
     unsigned int get_mask(size_t pos)const noexcept;
     size_t get_index(size_t pos)const;
 public:
@@ -15,10 +14,10 @@ public:
     Bitfield(std::initializer_list<unsigned int> list);
     ~Bitfield();
 
-    inline size_t get_size() {
-        return size;
+    inline size_t get_size()const noexcept {
+        return (max_power / 32);
     }
-    inline size_t get_power() {
+    inline size_t get_power()const noexcept {
         return max_power;
     }
     void set_bit(size_t pos);
