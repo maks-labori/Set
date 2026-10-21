@@ -22,7 +22,7 @@ public:
     }
     void set_bit(size_t pos);
     void reset_bit(size_t pos);
-    bool get_bit(size_t pos);
+    bool get_bit(size_t pos)const;
     
     bool operator==(const Bitfield& other)const noexcept;
     bool operator!=(const Bitfield& other)const noexcept;

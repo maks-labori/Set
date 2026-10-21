@@ -1,7 +1,7 @@
 #pragma once
 #include "bitfield.h"
-#include "algorithm"
-
+#include <algorithm>
+#include <fstream>
 class Set {
 private:
     Bitfield bitfield_;
@@ -47,4 +47,6 @@ public:
 
     Set& operator=(const Set& other);
     Set& operator=(Set&& other);
+
+    friend std::ostream& operator<<(std::ostream& out, const Set& set);
 };

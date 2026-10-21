@@ -69,7 +69,7 @@ void Bitfield::reset_bit(size_t pos) {
     data_[index] &= ~mask;
 }
 
-bool Bitfield::get_bit(size_t pos) {
+bool Bitfield::get_bit(size_t pos)const {
     if (pos >= max_power) { throw std::out_of_range("out of range"); }
     size_t index = get_index(pos);
     unsigned int mask = get_mask(pos - (32 * index));
