@@ -13,6 +13,12 @@ Set::Set(Set&& other) {
     swap((*this), other);
 }
 
+Set::Set(std::initializer_list<int> list):bitfield_(std::max(list)) {
+    for (auto elem : list) {
+        insert(elem);
+    }
+}
+
 Set::Set(const Bitfield& bitfield) :bitfield_(bitfield) {}
 
 Set::operator Bitfield()const noexcept {

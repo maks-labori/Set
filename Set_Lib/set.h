@@ -1,5 +1,6 @@
 #pragma once
 #include "bitfield.h"
+#include "algorithm"
 
 class Set {
 private:
@@ -9,7 +10,12 @@ public:
     Set(const Set& set);
     Set(Set&& other);
     Set(const Bitfield& bitfield);
+    Set(std::initializer_list<int> list);
     operator Bitfield()const noexcept;
+
+    inline const Bitfield& get_field() {
+        return bitfield_;
+    }
 
     inline size_t max_power()const noexcept {
         return bitfield_.get_power(); 

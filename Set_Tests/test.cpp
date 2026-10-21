@@ -1,6 +1,6 @@
 #include "pch.h"
 
-//#define BITFIELD_TESTS
+#define BITFIELD_TESTS
 #define SET_TESTS
 
 #ifdef BITFIELD_TESTS
@@ -170,67 +170,187 @@ TEST(TestBitfield, TestThrowsDifferentDimension) {
 
 #ifdef SET_TESTS
 
-TEST(TestSet, TestMaxPowerConstructor) {
+#include "set.h"
 
+TEST(TestSet, TestMaxPowerConstructor) {
+    Set one(10);
+    EXPECT_EQ(one.max_power(), 32);
+    Set two(60);
+    EXPECT_EQ(two.max_power(), 64);
+}
+
+TEST(TestSet, TestListConstructor) {
+    Set one = { 1,2,3 };
+    EXPECT_EQ(one.max_power(), 32);
+    Set two = {1,2,60};
+    EXPECT_EQ(two.max_power(), 64);
 }
 
 TEST(TestSet, TestCopyConstructor) {
+    Set one(10);
+    one.insert(5);
 
+    Set two(one);
+    EXPECT_EQ(two.max_power(), 32);
+    Bitfield b1 = static_cast<Bitfield>(one);
+    Bitfield b2 = static_cast<Bitfield>(two);
+    EXPECT_EQ(b1, b2);
 }
 
 TEST(TestSet, TestMoveConstructor) {
-
+    Set one(10);
+    one.insert(3);
+    Set two(std::move(one));
+    EXPECT_EQ(two.max_power(),32);
+    Bitfield b2 = static_cast<Bitfield>(two);
+    EXPECT_TRUE(b2.get_bit(2));
 }
 
 TEST(TestSet, TestOperatorBitfield) {
-
+    Set one(5);
+    one.insert(1);
+    Bitfield b = static_cast<Bitfield>(one);
+    EXPECT_TRUE(b.get_bit(0));
 }
 
 TEST(TestSet, TestInsert) {
+    Set one(10);
+    one.insert(5);
+    one.insert(10);
+    one.insert(32);
+    one.insert(1);
 
+    Bitfield b = static_cast<Bitfield>(one);
+    EXPECT_TRUE(b.get_bit(4));
+    EXPECT_TRUE(b.get_bit(9));
+    EXPECT_TRUE(b.get_bit(31));
+    EXPECT_TRUE(b.get_bit(0));
 }
 
-TEST(TestSet, TestThrowOutOfRangeInsertAndErase) {
+TEST(TestSet, TestErase) {
+    Set one(10);
+    one.insert(5);
+    one.insert(10);
+    one.insert(32);
+    one.insert(1);
 
+    one.erase(5);
+    one.erase(1);
+
+    Bitfield b = static_cast<Bitfield>(one);
+    EXPECT_FALSE(b.get_bit(4));
+    EXPECT_TRUE(b.get_bit(9));
+    EXPECT_TRUE(b.get_bit(31));
+    EXPECT_FALSE(b.get_bit(0));
+}
+TEST(TestSet, TestThrowOutOfRangeInsertAndErase) {
+    Set one(10);
+    EXPECT_THROW(one.insert(0), std::out_of_range);
+    EXPECT_THROW(one.insert(33), std::out_of_range);
+
+    EXPECT_THROW(one.erase(0), std::out_of_range);
+    EXPECT_THROW(one.erase(33), std::out_of_range);
 }
 
 TEST(TestSet, TestSumWithElem) {
+    Set one(10);
+    Set two = one + 5;
 
+    Bitfield b1 = static_cast<Bitfield>(one);
+    Bitfield b2 = static_cast<Bitfield>(two);
+
+    EXPECT_FALSE(b1.get_bit(4));
+    EXPECT_TRUE(b2.get_bit(4));
 }
 
 TEST(TestSet, TestSubWithElem) {
+    Set one(10);
+    one.insert(5);
+    Set two = one - 5;
 
+    Bitfield b1 = static_cast<Bitfield>(one);
+    Bitfield b2 = static_cast<Bitfield>(two);
+    EXPECT_TRUE(b1.get_bit(4));
+    EXPECT_FALSE(b2.get_bit(4));
 }
 
 TEST(TestSet, TestOperationsWithEqualsByElem) {
+    Set one(10);
+    one += 5;
+    Bitfield b1 = static_cast<Bitfield>(one);
+    EXPECT_TRUE(b1.get_bit(4));
 
+    one -= 5;
+    Bitfield b2 = static_cast<Bitfield>(one);
+    EXPECT_FALSE(b2.get_bit(4));
 }
 
 TEST(TestSet, TestSumWithSet) {
+    Set one(10); one.insert(1);
+    Set two(10); two.insert(2);
 
+    Set res = one + two;
+    Bitfield b = static_cast<Bitfield>(res);
+    EXPECT_TRUE(b.get_bit(0));
+    EXPECT_TRUE(b.get_bit(1));
 }
 
 TEST(TestSet, TestSubWithSet) {
+    Set one(10); one.insert(1); one.insert(2);
+    Set two(10); two.insert(2);
 
+    Set res = one - two;
+    Bitfield b = static_cast<Bitfield>(res);
+    EXPECT_TRUE(b.get_bit(0));
+    EXPECT_FALSE(b.get_bit(1));
 }
 
 TEST(TestSet, TestMultWithSet) {
+    Set one(10); one.insert(1); one.insert(2);
+    Set two(10); two.insert(2); two.insert(3);
 
+    Set res = one * two;
+    Bitfield b = static_cast<Bitfield>(res);
+    EXPECT_FALSE(b.get_bit(0));
+    EXPECT_TRUE(b.get_bit(1));
+    EXPECT_FALSE(b.get_bit(2));
 }
 
-TEST(TestSet, TestOperationsWithEqualsBySet) {
 
+TEST(TestSet, TestOperationsWithEqualsBySet) {
+    Set one(10); one.insert(1);
+    Set two(10); two.insert(2);
+
+    one += two;
+    EXPECT_TRUE(one == (Set(10) + 1 + 2));
+
+    one -= two;
+    EXPECT_TRUE(one == (Set(10) + 1));
+
+    one *= two;
+    Bitfield b = static_cast<Bitfield>(one);
+    EXPECT_FALSE(b.get_bit(0));
 }
 
 TEST(TestSet, TestAssigment) {
+    Set one(10);
+    one.insert(7);
+    Set two(60);
 
+    two = one;
+    EXPECT_EQ(two.max_power(), 32);
+    EXPECT_TRUE(one == two);
 }
 
 TEST(TestSet, TestAssigmentMove) {
+    Set one(10);
+    one.insert(8);
+    Set two(60);
 
+    two = std::move(one);
+    EXPECT_EQ(two.max_power(), 32);
+    Bitfield b = static_cast<Bitfield>(two);
+    EXPECT_TRUE(b.get_bit(7));
 }
-
-
-
 
 #endif
