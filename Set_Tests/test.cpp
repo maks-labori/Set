@@ -1,5 +1,10 @@
 #include "pch.h"
 
+//#define BITFIELD_TESTS
+#define SET_TESTS
+
+#ifdef BITFIELD_TESTS
+
 #include "bitfield.h"
 
 TEST(TestBitfield, TestDefaultConstructor) {
@@ -160,3 +165,72 @@ TEST(TestBitfield, TestThrowsDifferentDimension) {
     EXPECT_THROW(one &= two, std::logic_error);
     EXPECT_THROW(one |= two, std::logic_error);
 }
+
+#endif
+
+#ifdef SET_TESTS
+
+TEST(TestSet, TestMaxPowerConstructor) {
+
+}
+
+TEST(TestSet, TestCopyConstructor) {
+
+}
+
+TEST(TestSet, TestMoveConstructor) {
+
+}
+
+TEST(TestSet, TestOperatorBitfield) {
+
+}
+
+TEST(TestSet, TestInsert) {
+
+}
+
+TEST(TestSet, TestThrowOutOfRangeInsertAndErase) {
+
+}
+
+TEST(TestSet, TestSumWithElem) {
+
+}
+
+TEST(TestSet, TestSubWithElem) {
+
+}
+
+TEST(TestSet, TestOperationsWithEqualsByElem) {
+
+}
+
+TEST(TestSet, TestSumWithSet) {
+
+}
+
+TEST(TestSet, TestSubWithSet) {
+
+}
+
+TEST(TestSet, TestMultWithSet) {
+
+}
+
+TEST(TestSet, TestOperationsWithEqualsBySet) {
+
+}
+
+TEST(TestSet, TestAssigment) {
+
+}
+
+TEST(TestSet, TestAssigmentMove) {
+
+}
+
+
+
+
+#endif

@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\maksi\OneDrive\Desktop\Set\BItfield_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\maksi\OneDrive\Desktop\Set\Set_Lib;C:\Users\maksi\OneDrive\Desktop\Set\BItfield_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +129,9 @@
   <ItemGroup>
     <ProjectReference Include="..\BItfield_lib\BItfield_lib.vcxproj">
       <Project>{e041a268-3903-4d2d-8709-b9343371de8f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Set_Lib\Set_Lib.vcxproj">
+      <Project>{4dae5846-2f15-43b8-9256-20ed6a603461}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
