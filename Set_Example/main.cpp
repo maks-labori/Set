@@ -105,7 +105,7 @@ int main() {
         }
         catch (std::exception& e) {
             std::cout << e.what();
-            std::cout << "\n try again";
+            std::cout << "\n try again\n";
         }
     }
     std::cout << "Total:\n";
