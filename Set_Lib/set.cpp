@@ -115,12 +115,33 @@ Set& Set::operator=(Set&& other) {
     return (*this);
 }
 
-std::ostream& operator<<(std::ostream& out, const Set& set) {
-    size_t size = set.max_power();
-    out << "{";
-    for (int i = 0;i < size;++i) {
-        if (set.bitfield_.get_bit(i)) { out << i + 1 << " "; }
+std::istream& operator>>(std::istream& is, Set& other) {
+  char symbol;
+  int num = 0;
+  while (is >> symbol && symbol != '\n' && symbol != '}') {
+    if (symbol == ' ' || symbol == '{') continue;
+    if (symbol != ',') {
+      num += (symbol - '0');
+      num *= 10;
+    } else {
+      other.insert(num / 10);
+      num = 0;
     }
-    out << "}";
-    return out;
+  }
+  other.insert(num / 10);
+  return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Set& other) {
+  os << "{ ";
+  bool flag = false;
+  for (size_t i = 1; i <= other.max_power(); ++i) {
+    if (other.isMember(i)) {
+      if (flag) os << ", ";
+      os << i;
+      flag = true;
+    }
+  }
+  os << " }\n";
+  return os;
 }

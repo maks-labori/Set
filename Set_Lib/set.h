@@ -3,50 +3,50 @@
 #include <algorithm>
 #include <fstream>
 class Set {
-private:
-    Bitfield bitfield_;
-public:
-    Set(size_t max_power);
-    Set(const Set& set);
-    Set(Set&& other);
-    Set(const Bitfield& bitfield);
-    Set(std::initializer_list<int> list);
-    operator Bitfield()const noexcept;
+ private:
+  Bitfield bitfield_;
 
-    inline const Bitfield& get_field() {
-        return bitfield_;
-    }
+ public:
+  Set(size_t max_power);
+  Set(const Set& set);
+  Set(Set&& other);
+  Set(const Bitfield& bitfield);
+  Set(std::initializer_list<int> list);
+  operator Bitfield() const noexcept;
 
-    inline size_t max_power()const noexcept {
-        return bitfield_.get_power(); 
-    }
+  inline const Bitfield& get_field() { return bitfield_; }
 
-    friend void swap(Set& this_set,Set& other_set);
+  inline size_t max_power() const noexcept { return bitfield_.get_power(); }
 
-    void insert(int value);
-    void erase(int value);
+  friend void swap(Set& this_set, Set& other_set);
 
-    Set operator+(int elem);
-    Set operator-(int elem);
+  bool isMember(int elem) const { return bitfield_.get_bit(elem - 1); }
 
-    Set& operator+=(int elem);
-    Set& operator-=(int elem);
+  void insert(int value);
+  void erase(int value);
 
-    Set operator+(const Set& other);
-    Set operator-(const Set& other);
-    Set operator*(const Set& other);
+  Set operator+(int elem);
+  Set operator-(int elem);
 
-    Set& operator+=(const Set& other);
-    Set& operator-=(const Set& other);
-    Set& operator*=(const Set& other);
+  Set& operator+=(int elem);
+  Set& operator-=(int elem);
 
-    Set operator~();
+  Set operator+(const Set& other);
+  Set operator-(const Set& other);
+  Set operator*(const Set& other);
 
-    bool operator==(const Set& other);
-    bool operator!=(const Set& other);
+  Set& operator+=(const Set& other);
+  Set& operator-=(const Set& other);
+  Set& operator*=(const Set& other);
 
-    Set& operator=(const Set& other);
-    Set& operator=(Set&& other);
+  Set operator~();
 
-    friend std::ostream& operator<<(std::ostream& out, const Set& set);
+  bool operator==(const Set& other);
+  bool operator!=(const Set& other);
+
+  Set& operator=(const Set& other);
+  Set& operator=(Set&& other);
 };
+
+std::istream& operator>>(std::istream& is, Set& other);
+std::ostream& operator<<(std::ostream& os, const Set& other);

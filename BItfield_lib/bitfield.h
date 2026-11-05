@@ -39,3 +39,6 @@ public:
     Bitfield& operator|=(const Bitfield& other);
     Bitfield& operator&=(const Bitfield& other);
 };
+
+std::istream& operator>>(std::istream& is, Bitfield& other);
+std::ostream& operator<<(std::ostream& os, const Bitfield& other);

@@ -58,21 +58,21 @@ size_t Bitfield::get_index(size_t pos)const { // по индексу бита индекс €чейки
 void Bitfield::set_bit(size_t pos) { //все по индексу бита,а не значению
     if (pos >= max_power) { throw std::out_of_range("out of range"); }
     size_t index = get_index(pos);
-    unsigned int mask = get_mask(pos - (32 * index));
+    unsigned int mask = get_mask(pos);
     data_[index] |= mask;
 }
 
 void Bitfield::reset_bit(size_t pos) {
     if (pos >= max_power) { throw std::out_of_range("out of range"); }
     size_t index = get_index(pos);
-    unsigned int mask = get_mask(pos - (32 * index));
+    unsigned int mask = get_mask(pos);
     data_[index] &= ~mask;
 }
 
 bool Bitfield::get_bit(size_t pos)const {
     if (pos >= max_power) { throw std::out_of_range("out of range"); }
     size_t index = get_index(pos);
-    unsigned int mask = get_mask(pos - (32 * index));
+    unsigned int mask = get_mask(pos);
     return data_[index] & mask;
 }
 
@@ -137,4 +137,22 @@ Bitfield& Bitfield::operator|=(const Bitfield& other) {
 Bitfield& Bitfield::operator&=(const Bitfield& other) {
     (*this) = (*this) & other;
     return (*this);
+}
+
+std::istream& operator>>(std::istream& is, Bitfield& other) {
+  char temp = '0';
+  for (size_t i = 0; i < other.get_power() && (temp != '\n'); ++i) {
+    if (is.get(temp) && temp == '1') {
+      other.set_bit(i);
+    }
+  }
+  return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Bitfield& other) {
+  for (size_t i = 0; i < other.get_power(); ++i) {
+    os << other.get_bit(i);
+  }
+  os << '\n';
+  return os;
 }
