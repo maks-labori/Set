@@ -192,9 +192,7 @@ TEST(TestSet, TestCopyConstructor) {
 
     Set two(one);
     EXPECT_EQ(two.max_power(), 32);
-    Bitfield b1 = static_cast<Bitfield>(one);
-    Bitfield b2 = static_cast<Bitfield>(two);
-    EXPECT_EQ(b1, b2);
+    EXPECT_TRUE(one == two);
 }
 
 TEST(TestSet, TestMoveConstructor) {
@@ -202,15 +200,13 @@ TEST(TestSet, TestMoveConstructor) {
     one.insert(3);
     Set two(std::move(one));
     EXPECT_EQ(two.max_power(),32);
-    Bitfield b2 = static_cast<Bitfield>(two);
-    EXPECT_TRUE(b2.get_bit(2));
+    EXPECT_TRUE(two.isMember(3));
 }
 
 TEST(TestSet, TestOperatorBitfield) {
     Set one(5);
     one.insert(1);
-    Bitfield b = static_cast<Bitfield>(one);
-    EXPECT_TRUE(b.get_bit(0));
+    EXPECT_TRUE(one.isMember(1));
 }
 
 TEST(TestSet, TestInsert) {
@@ -219,12 +215,10 @@ TEST(TestSet, TestInsert) {
     one.insert(10);
     one.insert(32);
     one.insert(1);
-
-    Bitfield b = static_cast<Bitfield>(one);
-    EXPECT_TRUE(b.get_bit(4));
-    EXPECT_TRUE(b.get_bit(9));
-    EXPECT_TRUE(b.get_bit(31));
-    EXPECT_TRUE(b.get_bit(0));
+    EXPECT_TRUE(one.isMember(5));
+    EXPECT_TRUE(one.isMember(10));
+    EXPECT_TRUE(one.isMember(32));
+    EXPECT_TRUE(one.isMember(1));
 }
 
 TEST(TestSet, TestErase) {
@@ -236,12 +230,10 @@ TEST(TestSet, TestErase) {
 
     one.erase(5);
     one.erase(1);
-
-    Bitfield b = static_cast<Bitfield>(one);
-    EXPECT_FALSE(b.get_bit(4));
-    EXPECT_TRUE(b.get_bit(9));
-    EXPECT_TRUE(b.get_bit(31));
-    EXPECT_FALSE(b.get_bit(0));
+    EXPECT_FALSE(one.isMember(5));
+    EXPECT_TRUE(one.isMember(10));
+    EXPECT_TRUE(one.isMember(32));
+    EXPECT_FALSE(one.isMember(1));
 }
 TEST(TestSet, TestThrowOutOfRangeInsertAndErase) {
     Set one(10);
@@ -256,33 +248,25 @@ TEST(TestSet, TestSumWithElem) {
     Set one(10);
     Set two = one + 5;
 
-    Bitfield b1 = static_cast<Bitfield>(one);
-    Bitfield b2 = static_cast<Bitfield>(two);
-
-    EXPECT_FALSE(b1.get_bit(4));
-    EXPECT_TRUE(b2.get_bit(4));
+    EXPECT_FALSE(one.isMember(5));
+    EXPECT_TRUE(two.isMember(5));
 }
 
 TEST(TestSet, TestSubWithElem) {
     Set one(10);
     one.insert(5);
     Set two = one - 5;
-
-    Bitfield b1 = static_cast<Bitfield>(one);
-    Bitfield b2 = static_cast<Bitfield>(two);
-    EXPECT_TRUE(b1.get_bit(4));
-    EXPECT_FALSE(b2.get_bit(4));
+    EXPECT_TRUE(one.isMember(5));
+    EXPECT_FALSE(two.isMember(5));
 }
 
 TEST(TestSet, TestOperationsWithEqualsByElem) {
     Set one(10);
     one += 5;
-    Bitfield b1 = static_cast<Bitfield>(one);
-    EXPECT_TRUE(b1.get_bit(4));
+    EXPECT_TRUE(one.isMember(5));
 
     one -= 5;
-    Bitfield b2 = static_cast<Bitfield>(one);
-    EXPECT_FALSE(b2.get_bit(4));
+    EXPECT_FALSE(one.isMember(5));
 }
 
 TEST(TestSet, TestSumWithSet) {
@@ -290,9 +274,8 @@ TEST(TestSet, TestSumWithSet) {
     Set two(10); two.insert(2);
 
     Set res = one + two;
-    Bitfield b = static_cast<Bitfield>(res);
-    EXPECT_TRUE(b.get_bit(0));
-    EXPECT_TRUE(b.get_bit(1));
+    EXPECT_TRUE(res.isMember(1));
+    EXPECT_TRUE(res.isMember(2));
 }
 
 TEST(TestSet, TestSubWithSet) {
@@ -300,9 +283,8 @@ TEST(TestSet, TestSubWithSet) {
     Set two(10); two.insert(2);
 
     Set res = one - two;
-    Bitfield b = static_cast<Bitfield>(res);
-    EXPECT_TRUE(b.get_bit(0));
-    EXPECT_FALSE(b.get_bit(1));
+    EXPECT_TRUE(res.isMember(1));
+    EXPECT_FALSE(res.isMember(2));
 }
 
 TEST(TestSet, TestMultWithSet) {
@@ -310,10 +292,9 @@ TEST(TestSet, TestMultWithSet) {
     Set two(10); two.insert(2); two.insert(3);
 
     Set res = one * two;
-    Bitfield b = static_cast<Bitfield>(res);
-    EXPECT_FALSE(b.get_bit(0));
-    EXPECT_TRUE(b.get_bit(1));
-    EXPECT_FALSE(b.get_bit(2));
+    EXPECT_FALSE(res.isMember(1));
+    EXPECT_TRUE(res.isMember(2));
+    EXPECT_FALSE(res.isMember(3));
 }
 
 
@@ -328,8 +309,7 @@ TEST(TestSet, TestOperationsWithEqualsBySet) {
     EXPECT_TRUE(one == (Set(10) + 1));
 
     one *= two;
-    Bitfield b = static_cast<Bitfield>(one);
-    EXPECT_FALSE(b.get_bit(0));
+    EXPECT_FALSE(one.isMember(1));
 }
 
 TEST(TestSet, TestAssigment) {
@@ -349,8 +329,7 @@ TEST(TestSet, TestAssigmentMove) {
 
     two = std::move(one);
     EXPECT_EQ(two.max_power(), 32);
-    Bitfield b = static_cast<Bitfield>(two);
-    EXPECT_TRUE(b.get_bit(7));
+    EXPECT_TRUE(two.isMember(8));
 }
 
 #endif
